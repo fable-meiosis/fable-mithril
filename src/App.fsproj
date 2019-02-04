@@ -5,7 +5,11 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="paket.references" />
-    <Compile Include="Mithril.fs" />
+    <Compile Include="Stream.fs" />
+    <Compile Include="Redraw.fs" />
+    <Compile Include="Render.fs" />
+    <Compile Include="Request.fs" />
+    <Compile Include="Mithril.fs" />    
     <Compile Include="App.fs" />
   </ItemGroup>
   <Import Project="..\.paket\Paket.Restore.targets" />

@@ -1,191 +1,363 @@
 // ts2fable 0.6.1
-module rec ModuleName
+module rec MMithril
 open System
 open Fable.Core
 open Fable.Import.JS
+open Fable.Import.Browser
 
-let [<Import("*","module")>] mithriljs: Mithriljs.IExports = jsNative
+// TODO
+type Hyperscript = Mithril.Hyperscript
+
+let [<Import("*","module")>] h: Hyperscript = jsNative
+let [<Import("*","module")>] Mithril: Mithril.Static = jsNative
+
+type Attrs = Array<obj>
+type State = obj
 
 type [<AllowNullLiteral>] IExports =
-    abstract mithriljs: [<ParamArray>] args: ResizeArray<obj option> -> obj option
+    /// Manually triggers a redraw of mounted components. 
+    abstract redraw: unit -> unit
+    /// Renders a vnode structure into a DOM element. 
+    abstract render: el: Element * vnodes: Mithril.Children -> unit
+    /// Mounts a component to a DOM element, enabling it to autoredraw on user events. 
+    abstract mount: element: Element * ``component``: Mithril.ComponentTypes<obj option, obj option> -> unit
+    /// Unmounts a component from a DOM element. 
+    abstract mount: element: Element * ``component``: obj -> unit
+    /// Makes an XHR request and returns a promise. 
+    abstract request: options: obj -> Promise<'T>
+    /// Makes an XHR request and returns a promise. 
+    abstract request: url: string * ?options: Mithril.RequestOptions<'T> -> Promise<'T>
+    /// Makes a JSON-P request and returns a promise. 
+    abstract jsonp: options: obj -> Promise<'T>
+    /// Makes a JSON-P request and returns a promise. 
+    abstract jsonp: url: string * ?options: Mithril.JsonpOptions -> Promise<'T>
 
-module Mithriljs =
-    let [<Import("buildQueryString","module/mithriljs")>] buildQueryString: BuildQueryString.IExports = jsNative
-    let [<Import("fragment","module/mithriljs")>] fragment: Fragment.IExports = jsNative
-    let [<Import("jsonp","module/mithriljs")>] jsonp: Jsonp.IExports = jsNative
-    let [<Import("m","module/mithriljs")>] m: M.IExports = jsNative
-    let [<Import("mount","module/mithriljs")>] mount: Mount.IExports = jsNative
-    let [<Import("parseQueryString","module/mithriljs")>] parseQueryString: ParseQueryString.IExports = jsNative
-    let [<Import("redraw","module/mithriljs")>] redraw: Redraw.IExports = jsNative
-    let [<Import("render","module/mithriljs")>] render: Render.IExports = jsNative
-    let [<Import("request","module/mithriljs")>] request: Request.IExports = jsNative
-    let [<Import("route","module/mithriljs")>] route: Route.IExports = jsNative
-    let [<Import("trust","module/mithriljs")>] trust: Trust.IExports = jsNative
-    let [<Import("vnode","module/mithriljs")>] vnode: Vnode.IExports = jsNative
+module Mithril =
 
-    type [<AllowNullLiteral>] IExports =
-        abstract PromisePolyfill: PromisePolyfillStatic
-        abstract prototype: obj
-        abstract version: string
-        abstract buildQueryString: ``object``: obj option -> obj option
-        abstract fragment: [<ParamArray>] args: ResizeArray<obj option> -> obj option
-        abstract jsonp: url: obj option * args: obj option * [<ParamArray>] args: ResizeArray<obj option> -> obj option
-        abstract m: selector: obj option * [<ParamArray>] args: ResizeArray<obj option> -> obj option
-        abstract mount: root: obj option * ``component``: obj option -> unit
-        abstract parseQueryString: string: obj option -> obj option
-        abstract redraw: unit -> unit
-        abstract render: dom: obj option * vnodes: obj option -> unit
-        abstract request: url: obj option * args: obj option * [<ParamArray>] args: ResizeArray<obj option> -> obj option
-        abstract route: root: obj option * defaultRoute: obj option * routes: obj option -> unit
-        abstract trust: html: obj option -> obj option
-        abstract vnode: tag: obj option * key: obj option * attrs0: obj option * children0: obj option * text: obj option * dom: obj option -> obj option
+    type [<AllowNullLiteral>] Lifecycle<'Attrs, 'State> =
+        /// The oninit hook is called before a vnode is touched by the virtual DOM engine. 
+        abstract oninit: this: 'State * vnode: Vnode<'Attrs, 'State> -> obj option
+        /// The oncreate hook is called after a DOM element is created and attached to the document. 
+        abstract oncreate: this: 'State * vnode: VnodeDOM<'Attrs, 'State> -> obj option
+        /// The onbeforeremove hook is called before a DOM element is detached from the document. If a Promise is returned, Mithril only detaches the DOM element after the promise completes. 
+        abstract onbeforeremove: this: 'State * vnode: VnodeDOM<'Attrs, 'State> -> U2<Promise<obj option>, unit>
+        /// The onremove hook is called before a DOM element is removed from the document. 
+        abstract onremove: this: 'State * vnode: VnodeDOM<'Attrs, 'State> -> obj option
+        /// The onbeforeupdate hook is called before a vnode is diffed in a update. 
+        abstract onbeforeupdate: this: 'State * vnode: Vnode<'Attrs, 'State> * old: VnodeDOM<'Attrs, 'State> -> U2<bool, unit>
+        /// The onupdate hook is called after a DOM element is updated, while attached to the document. 
+        abstract onupdate: this: 'State * vnode: VnodeDOM<'Attrs, 'State> -> obj option
+        /// WORKAROUND: TypeScript 2.4 does not allow extending an interface with all-optional properties. 
+        [<Emit "$0[$1]{{=$2}}">] abstract Item: ``_``: float -> obj option with get, set
 
-    type [<AllowNullLiteral>] PromisePolyfill =
-        abstract catch: p0: obj option -> obj option
-        abstract ``finally``: p0: obj option -> obj option
-        abstract ``then``: p0: obj option * p1: obj option -> obj option
+    type [<AllowNullLiteral>] Hyperscript =
+        /// Creates a virtual element (Vnode). 
+        [<Emit "$0($1...)">] abstract Invoke: selector: string * [<ParamArray>] children: ResizeArray<Children> -> Vnode<obj option, obj option>
+        /// Creates a virtual element (Vnode). 
+        [<Emit "$0($1...)">] abstract Invoke: selector: string * attributes: Attributes * [<ParamArray>] children: ResizeArray<Children> -> Vnode<obj option, obj option>
+        /// Creates a virtual element (Vnode). 
+        [<Emit "$0($1...)">] abstract Invoke: ``component``: ComponentTypes<Attrs, State> * [<ParamArray>] args: ResizeArray<Children> -> Vnode<Attrs, State>
+        /// Creates a virtual element (Vnode). 
+        [<Emit "$0($1...)">] abstract Invoke: ``component``: ComponentTypes<Attrs, State> * attributes: obj * [<ParamArray>] args: ResizeArray<Children> -> Vnode<Attrs, State>
+        /// Creates a fragment virtual element (Vnode). 
+        abstract fragment: attrs: obj * children: ChildArrayOrPrimitive -> Vnode<obj option, obj option>
+        /// Turns an HTML string into a virtual element (Vnode). Do not use trust on unsanitized user input. 
+        abstract trust: html: string -> Vnode<obj option, obj option>
 
-    type [<AllowNullLiteral>] PromisePolyfillStatic =
-        [<Emit "new $0($1...)">] abstract Create: p0: obj option -> PromisePolyfill
-        abstract all: p0: obj option -> obj option
-        abstract race: p0: obj option -> obj option
-        abstract reject: p0: obj option -> obj option
-        abstract resolve: p0: obj option -> obj option
+    type RouteResolver<'State> =
+        RouteResolver<obj, 'State>
 
-    module PromisePolyfill =
-        let [<Import("prototype","module/mithriljs/PromisePolyfill")>] prototype: Prototype.IExports = jsNative
+    type RouteResolver =
+        RouteResolver<obj, obj>
 
-        module Prototype =
+    type [<AllowNullLiteral>] RouteResolver<'Attrs, 'State> =
+        /// The onmatch hook is called when the router needs to find a component to render. 
+        abstract onmatch: this: RouteResolver<'Attrs, 'State> * args: 'Attrs * requestedPath: string -> U3<ComponentTypes<obj option, obj option>, Promise<obj option>, unit>
+        /// The render method is called on every redraw for a matching route. 
+        abstract render: this: RouteResolver<'Attrs, 'State> * vnode: Vnode<'Attrs, 'State> -> Children
 
-            type [<AllowNullLiteral>] IExports =
-                abstract ``then``: p0: obj option * p1: obj option -> obj option
+    /// This represents a key-value mapping linking routes to components. 
+    type [<AllowNullLiteral>] RouteDefs =
+        /// The key represents the route. The value represents the corresponding component. 
+        [<Emit "$0[$1]{{=$2}}">] abstract Item: url: string -> U2<ComponentTypes<obj option, obj option>, RouteResolver<obj option, obj option>> with get, set
 
-    module BuildQueryString =
+    type [<AllowNullLiteral>] RouteOptions =
+        /// Routing parameters. If path has routing parameter slots, the properties of this object are interpolated into the path string. 
+        abstract replace: bool option with get, set
+        /// The state object to pass to the underlying history.pushState / history.replaceState call. 
+        abstract state: obj option with get, set
+        /// The title string to pass to the underlying history.pushState / history.replaceState call. 
+        abstract title: string option with get, set
 
-        type [<AllowNullLiteral>] IExports =
-            abstract prototype: obj
+    type [<AllowNullLiteral>] Route =
+        /// Creates application routes and mounts Components and/or RouteResolvers to a DOM element. 
+        [<Emit "$0($1...)">] abstract Invoke: element: Element * defaultRoute: string * routes: RouteDefs -> unit
+        /// Returns the last fully resolved routing path, without the prefix. 
+        abstract get: unit -> string
+        /// Redirects to a matching route or to the default route if no matching routes can be found. 
+        abstract set: route: string * ?data: obj option * ?options: RouteOptions -> unit
+        /// Defines a router prefix which is a fragment of the URL that dictates the underlying strategy used by the router. 
+        abstract prefix: urlFragment: string -> unit
+        /// This method is meant to be used in conjunction with an <a> Vnode's oncreate hook. 
+        abstract link: vnode: Vnode<obj option, obj option> -> (Event -> obj option)
+        /// Returns the named parameter value from the current route. 
+        abstract param: name: string -> string
+        /// Gets all route parameters. 
+        abstract param: unit -> obj option
 
-    module Fragment =
+    type [<AllowNullLiteral>] RequestOptions<'T> =
+        /// The HTTP method to use. 
+        abstract ``method``: string option with get, set
+        /// The data to be interpolated into the URL and serialized into the querystring (for GET requests) or body (for other types of requests). 
+        abstract data: obj option with get, set
+        /// Whether the request should be asynchronous. Defaults to true. 
+        abstract async: bool option with get, set
+        /// A username for HTTP authorization. 
+        abstract user: string option with get, set
+        /// A password for HTTP authorization. 
+        abstract password: string option with get, set
+        /// Whether to send cookies to 3rd party domains. 
+        abstract withCredentials: bool option with get, set
+        /// Exposes the underlying XMLHttpRequest object for low-level configuration. 
+        abstract config: xhr: XMLHttpRequest * options: RequestOptions<'T> -> U2<XMLHttpRequest, unit>
+        /// Headers to append to the request before sending it. 
+        abstract headers: obj option with get, set
+        /// A constructor to be applied to each object in the response. 
+        abstract ``type``: obj option with get, set
+        /// A serialization method to be applied to data. Defaults to JSON.stringify, or if options.data is an instance of FormData, defaults to the identity function. 
+        abstract serialize: data: obj option -> obj option
+        /// A deserialization method to be applied to the response. Defaults to a small wrapper around JSON.parse that returns null for empty responses. 
+        abstract deserialize: data: string -> 'T
+        /// A hook to specify how the XMLHttpRequest response should be read. Useful for reading response headers and cookies. Defaults to a function that returns xhr.responseText 
+        abstract extract: xhr: XMLHttpRequest * options: RequestOptions<'T> -> 'T
+        /// Force the use of the HTTP body section for data in GET requests when set to true,
+        /// or the use of querystring for other HTTP methods when set to false.
+        /// Defaults to false for GET requests and true for other methods.
+        abstract useBody: bool option with get, set
+        /// If false, redraws mounted components upon completion of the request. If true, it does not. 
+        abstract background: bool option with get, set
 
-        type [<AllowNullLiteral>] IExports =
-            abstract prototype: obj
+    type [<AllowNullLiteral>] JsonpOptions =
+        /// The data to be interpolated into the URL and serialized into the querystring. 
+        abstract data: obj option with get, set
+        /// A constructor to be applied to each object in the response. 
+        abstract ``type``: obj option with get, set
+        /// The name of the function that will be called as the callback. 
+        abstract callbackName: string option with get, set
+        /// The name of the querystring parameter name that specifies the callback name. 
+        abstract callbackKey: string option with get, set
+        /// If false, redraws mounted components upon completion of the request. If true, it does not. 
+        abstract background: bool option with get, set
 
-    module Jsonp =
+    type [<AllowNullLiteral>] Static =
+        inherit Hyperscript
+        abstract route: Route with get, set
+        abstract mount: obj with get, set
+        abstract withAttr: obj with get, set
+        abstract render: obj with get, set
+        abstract redraw: obj with get, set
+        abstract request: obj with get, set
+        abstract jsonp: obj with get, set
+        /// Returns an object with key/value pairs parsed from a string of the form: ?a=1&b=2 
+        abstract parseQueryString: queryString: string -> obj
+        /// Turns the key/value pairs of an object into a string of the form: a=1&b=2 
+        abstract buildQueryString: values: StaticBuildQueryStringValues -> string
+        /// A string containing the semver value for the current Mithril release. 
+        abstract version: string with get, set
 
-        type [<AllowNullLiteral>] IExports =
-            abstract prototype: obj
+    type [<AllowNullLiteral>] StaticBuildQueryStringValues =
+        [<Emit "$0[$1]{{=$2}}">] abstract Item: p: string -> obj option with get, set
 
-    module M =
-        let [<Import("fragment","module/mithriljs/m")>] fragment: Fragment.IExports = jsNative
-        let [<Import("trust","module/mithriljs/m")>] trust: Trust.IExports = jsNative
+    type Child =
+        U4<Vnode<obj option, obj option>, string, float, bool> option
 
-        type [<AllowNullLiteral>] IExports =
-            abstract prototype: obj
-            abstract fragment: [<ParamArray>] args: ResizeArray<obj option> -> obj option
-            abstract trust: html: obj option -> obj option
+    [<RequireQualifiedAccess; CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+    module Child =
+        let ofVnodeOption v: Child = v |> Microsoft.FSharp.Core.Option.map U4.Case1
+        let ofVnode v: Child = v |> U4.Case1 |> Some
+        let isVnode (v: Child) = match v with None -> false | Some o -> match o with U4.Case1 _ -> true | _ -> false
+        let asVnode (v: Child) = match v with None -> None | Some o -> match o with U4.Case1 o -> Some o | _ -> None
+        let ofStringOption v: Child = v |> Microsoft.FSharp.Core.Option.map U4.Case2
+        let ofString v: Child = v |> U4.Case2 |> Some
+        let isString (v: Child) = match v with None -> false | Some o -> match o with U4.Case2 _ -> true | _ -> false
+        let asString (v: Child) = match v with None -> None | Some o -> match o with U4.Case2 o -> Some o | _ -> None
+        let ofFloatOption v: Child = v |> Microsoft.FSharp.Core.Option.map U4.Case3
+        let ofFloat v: Child = v |> U4.Case3 |> Some
+        let isFloat (v: Child) = match v with None -> false | Some o -> match o with U4.Case3 _ -> true | _ -> false
+        let asFloat (v: Child) = match v with None -> None | Some o -> match o with U4.Case3 o -> Some o | _ -> None
+        let ofBoolOption v: Child = v |> Microsoft.FSharp.Core.Option.map U4.Case4
+        let ofBool v: Child = v |> U4.Case4 |> Some
+        let isBool (v: Child) = match v with None -> false | Some o -> match o with U4.Case4 _ -> true | _ -> false
+        let asBool (v: Child) = match v with None -> None | Some o -> match o with U4.Case4 o -> Some o | _ -> None
 
-        module Fragment =
+    type [<AllowNullLiteral>] ChildArray =
+        inherit Array<Children>
 
-            type [<AllowNullLiteral>] IExports =
-                abstract prototype: obj
+    type Children =
+        U2<Child, ChildArray>
 
-        module Trust =
+    [<RequireQualifiedAccess; CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+    module Children =
+        let ofChild v: Children = v |> U2.Case1
+        let isChild (v: Children) = match v with U2.Case1 _ -> true | _ -> false
+        let asChild (v: Children) = match v with U2.Case1 o -> Some o | _ -> None
+        let ofChildArray v: Children = v |> U2.Case2
+        let isChildArray (v: Children) = match v with U2.Case2 _ -> true | _ -> false
+        let asChildArray (v: Children) = match v with U2.Case2 o -> Some o | _ -> None
 
-            type [<AllowNullLiteral>] IExports =
-                abstract prototype: obj
+    type ChildArrayOrPrimitive =
+        U4<ChildArray, string, float, bool>
 
-    module Mount =
+    [<RequireQualifiedAccess; CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+    module ChildArrayOrPrimitive =
+        let ofChildArray v: ChildArrayOrPrimitive = v |> U4.Case1
+        let isChildArray (v: ChildArrayOrPrimitive) = match v with U4.Case1 _ -> true | _ -> false
+        let asChildArray (v: ChildArrayOrPrimitive) = match v with U4.Case1 o -> Some o | _ -> None
+        let ofString v: ChildArrayOrPrimitive = v |> U4.Case2
+        let isString (v: ChildArrayOrPrimitive) = match v with U4.Case2 _ -> true | _ -> false
+        let asString (v: ChildArrayOrPrimitive) = match v with U4.Case2 o -> Some o | _ -> None
+        let ofFloat v: ChildArrayOrPrimitive = v |> U4.Case3
+        let isFloat (v: ChildArrayOrPrimitive) = match v with U4.Case3 _ -> true | _ -> false
+        let asFloat (v: ChildArrayOrPrimitive) = match v with U4.Case3 o -> Some o | _ -> None
+        let ofBool v: ChildArrayOrPrimitive = v |> U4.Case4
+        let isBool (v: ChildArrayOrPrimitive) = match v with U4.Case4 _ -> true | _ -> false
+        let asBool (v: ChildArrayOrPrimitive) = match v with U4.Case4 o -> Some o | _ -> None
 
-        type [<AllowNullLiteral>] IExports =
-            abstract prototype: obj
+    type Vnode<'State> =
+        Vnode<obj, 'State>
 
-    module ParseQueryString =
+    type Vnode =
+        Vnode<obj, obj>
 
-        type [<AllowNullLiteral>] IExports =
-            abstract prototype: obj
+    /// Virtual DOM nodes, or vnodes, are Javascript objects that represent an element (or parts of the DOM). 
+    type [<AllowNullLiteral>] Vnode<'Attrs, 'State> =
+        /// The nodeName of a DOM element. It may also be the string [ if a vnode is a fragment, # if it's a text vnode, or < if it's a trusted HTML vnode. Additionally, it may be a component. 
+        abstract tag: U2<string, ComponentTypes<'Attrs, 'State>> with get, set
+        /// A hashmap of DOM attributes, events, properties and lifecycle methods. 
+        abstract attrs: 'Attrs with get, set
+        /// An object that is persisted between redraws. In component vnodes, state is a shallow clone of the component object. 
+        abstract state: 'State with get, set
+        /// The value used to map a DOM element to its respective item in an array of data. 
+        abstract key: U2<string, float> option with get, set
+        /// In most vnode types, the children property is an array of vnodes. For text and trusted HTML vnodes, The children property is either a string, a number or a boolean. 
+        abstract children: ChildArrayOrPrimitive option with get, set
+        /// This is used instead of children if a vnode contains a text node as its only child.
+        /// This is done for performance reasons.
+        /// Component vnodes never use the text property even if they have a text node as their only child.
+        abstract text: U3<string, float, bool> option with get, set
 
-    module Redraw =
-        let [<Import("sync","module/mithriljs/redraw")>] sync: Sync.IExports = jsNative
+    type VnodeDOM<'State> =
+        VnodeDOM<obj, 'State>
 
-        type [<AllowNullLiteral>] IExports =
-            abstract prototype: obj
-            abstract sync: unit -> unit
+    type VnodeDOM =
+        VnodeDOM<obj, obj>
 
-        module Sync =
+    type [<AllowNullLiteral>] VnodeDOM<'Attrs, 'State> =
+        inherit Vnode<'Attrs, 'State>
+        /// Points to the element that corresponds to the vnode. 
+        abstract dom: Element with get, set
+        /// This defines the number of DOM elements that the vnode represents (starting from the element referenced by the dom property). 
+        abstract domSize: float option with get, set
 
-            type [<AllowNullLiteral>] IExports =
-                abstract prototype: obj
+    type CVnode =
+        CVnode<obj>
 
-    module Render =
+    type [<AllowNullLiteral>] CVnode<'A> =
+        inherit Vnode<'A, ClassComponent<'A>>
 
-        type [<AllowNullLiteral>] IExports =
-            abstract prototype: obj
+    type CVnodeDOM =
+        CVnodeDOM<obj>
 
-    module Request =
+    type [<AllowNullLiteral>] CVnodeDOM<'A> =
+        inherit VnodeDOM<'A, ClassComponent<'A>>
 
-        type [<AllowNullLiteral>] IExports =
-            abstract prototype: obj
+    type Component<'State> =
+        Component<obj, 'State>
 
-    module Route =
-        let [<Import("get","module/mithriljs/route")>] get: Get.IExports = jsNative
-        let [<Import("link","module/mithriljs/route")>] link: Link.IExports = jsNative
-        let [<Import("param","module/mithriljs/route")>] param: Param.IExports = jsNative
-        let [<Import("prefix","module/mithriljs/route")>] prefix: Prefix.IExports = jsNative
-        let [<Import("set","module/mithriljs/route")>] set: Set.IExports = jsNative
+    type Component =
+        Component<obj, obj>
 
-        type [<AllowNullLiteral>] IExports =
-            abstract prototype: obj
-            abstract get: unit -> obj option
-            abstract link: args0: obj option -> obj option
-            abstract param: key0: obj option -> obj option
-            abstract prefix: prefix: obj option -> unit
-            abstract set: path: obj option * data0: obj option * options: obj option -> unit
+    /// Components are a mechanism to encapsulate parts of a view to make code easier to organize and/or reuse.
+    /// Any Javascript object that has a view method can be used as a Mithril component.
+    /// Components can be consumed via the m() utility.
+    type [<AllowNullLiteral>] Component<'Attrs, 'State> =
+        inherit Lifecycle<'Attrs, 'State>
+        /// Creates a view out of virtual elements. 
+        abstract view: this: 'State * vnode: Vnode<'Attrs, 'State> -> U2<Children, unit> option
 
-        module Get =
+    type ClassComponent =
+        ClassComponent<obj>
 
-            type [<AllowNullLiteral>] IExports =
-                abstract prototype: obj
+    /// Components are a mechanism to encapsulate parts of a view to make code easier to organize and/or reuse.
+    /// Any class that implements a view method can be used as a Mithril component.
+    /// Components can be consumed via the m() utility.
+    type [<AllowNullLiteral>] ClassComponent<'A> =
+        inherit Lifecycle<'A, ClassComponent<'A>>
+        /// The oninit hook is called before a vnode is touched by the virtual DOM engine. 
+        abstract oninit: vnode: Vnode<'A, ClassComponent<'A>> -> obj option
+        /// The oncreate hook is called after a DOM element is created and attached to the document. 
+        abstract oncreate: vnode: VnodeDOM<'A, ClassComponent<'A>> -> obj option
+        /// The onbeforeremove hook is called before a DOM element is detached from the document. If a Promise is returned, Mithril only detaches the DOM element after the promise completes. 
+        abstract onbeforeremove: vnode: VnodeDOM<'A, ClassComponent<'A>> -> U2<Promise<obj option>, unit>
+        /// The onremove hook is called before a DOM element is removed from the document. 
+        abstract onremove: vnode: VnodeDOM<'A, ClassComponent<'A>> -> obj option
+        /// The onbeforeupdate hook is called before a vnode is diffed in a update. 
+        abstract onbeforeupdate: vnode: Vnode<'A, ClassComponent<'A>> * old: VnodeDOM<'A, ClassComponent<'A>> -> U2<bool, unit>
+        /// The onupdate hook is called after a DOM element is updated, while attached to the document. 
+        abstract onupdate: vnode: VnodeDOM<'A, ClassComponent<'A>> -> obj option
+        /// Creates a view out of virtual elements. 
+        abstract view: vnode: Vnode<'A, ClassComponent<'A>> -> U2<Children, unit> option
 
-        module Link =
+    type FactoryComponent =
+        FactoryComponent<obj>
 
-            type [<AllowNullLiteral>] IExports =
-                abstract prototype: obj
+    type [<AllowNullLiteral>] FactoryComponent<'A> =
+        [<Emit "$0($1...)">] abstract Invoke: vnode: Vnode<'A> -> Component<'A>
 
-        module Param =
+    type ClosureComponent =
+        ClosureComponent<obj>
 
-            type [<AllowNullLiteral>] IExports =
-                abstract prototype: obj
+    type ClosureComponent<'A> =
+        FactoryComponent<'A>
 
-        module Prefix =
+    type Comp<'State> =
+        Comp<obj, 'State>
 
-            type [<AllowNullLiteral>] IExports =
-                abstract prototype: obj
+    type Comp =
+        Comp<obj, obj>
 
-        module Set =
+    type [<AllowNullLiteral>] Comp<'Attrs, 'State> =
+        interface end
 
-            type [<AllowNullLiteral>] IExports =
-                abstract prototype: obj
+    type ComponentTypes<'S> =
+        ComponentTypes<obj, 'S>
 
-    module Trust =
+    type ComponentTypes =
+        ComponentTypes<obj, obj>
 
-        type [<AllowNullLiteral>] IExports =
-            abstract prototype: obj
+    type ComponentTypes<'A, 'S> =
+        U3<Component<'A, 'S>, (CVnode<'A> -> obj), FactoryComponent<'A>>
 
-    module Vnode =
-        let [<Import("normalize","module/mithriljs/vnode")>] normalize: Normalize.IExports = jsNative
-        let [<Import("normalizeChildren","module/mithriljs/vnode")>] normalizeChildren: NormalizeChildren.IExports = jsNative
+    [<RequireQualifiedAccess; CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+    module ComponentTypes =
+        let ofComponent v: ComponentTypes<'A, 'S> = v |> U3.Case1
+        let isComponent (v: ComponentTypes<'A, 'S>) = match v with U3.Case1 _ -> true | _ -> false
+        let asComponent (v: ComponentTypes<'A, 'S>) = match v with U3.Case1 o -> Some o | _ -> None
+        let ofCreate v: ComponentTypes<'A, 'S> = v |> U3.Case2
+        let isCreate (v: ComponentTypes<'A, 'S>) = match v with U3.Case2 _ -> true | _ -> false
+        let asCreate (v: ComponentTypes<'A, 'S>) = match v with U3.Case2 o -> Some o | _ -> None
+        let ofFactoryComponent v: ComponentTypes<'A, 'S> = v |> U3.Case3
+        let isFactoryComponent (v: ComponentTypes<'A, 'S>) = match v with U3.Case3 _ -> true | _ -> false
+        let asFactoryComponent (v: ComponentTypes<'A, 'S>) = match v with U3.Case3 o -> Some o | _ -> None
 
-        type [<AllowNullLiteral>] IExports =
-            abstract prototype: obj
-            abstract normalize: node: obj option -> obj option
-            abstract normalizeChildren: input: obj option -> obj option
-
-        module Normalize =
-
-            type [<AllowNullLiteral>] IExports =
-                abstract prototype: obj
-
-        module NormalizeChildren =
-
-            type [<AllowNullLiteral>] IExports =
-                abstract prototype: obj
+    /// This represents the attributes available for configuring virtual elements, beyond the applicable DOM attributes. 
+    type [<AllowNullLiteral>] Attributes =
+        inherit Lifecycle<obj option, obj option>
+        /// The class name(s) for this virtual element, as a space-separated list. 
+        abstract className: string option with get, set
+        /// The class name(s) for this virtual element, as a space-separated list. 
+        abstract ``class``: string option with get, set
+        /// A key to optionally associate with this element. 
+        abstract key: U2<string, float> option with get, set
+        /// Any other virtual element properties, including attributes and event handlers. 
+        [<Emit "$0[$1]{{=$2}}">] abstract Item: property: string -> obj option with get, set

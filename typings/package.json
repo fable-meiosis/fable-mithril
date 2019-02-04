@@ -1,0 +1,61 @@
+{
+  "_from": "@types/mithril",
+  "_id": "@types/mithril@1.1.14",
+  "_inBundle": false,
+  "_integrity": "sha512-y7/U0bS8JpoH8tHq/19A7uVsCxsquu+Gac9yd+gncWjNUsYrLL03VIN6Cx+90UoF0ppOIvRj/bawzFu1chKiiA==",
+  "_location": "/@types/mithril",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "@types/mithril",
+    "name": "@types/mithril",
+    "escapedName": "@types%2fmithril",
+    "scope": "@types",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#DEV:/",
+    "#USER"
+  ],
+  "_resolved": "https://registry.npmjs.org/@types/mithril/-/mithril-1.1.14.tgz",
+  "_shasum": "3a3d472bff165a1f05c30cbe8a5405d50dd234ae",
+  "_spec": "@types/mithril",
+  "_where": "/Users/kristianmandrup/repos/fable-projects/test123",
+  "bugs": {
+    "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/issues"
+  },
+  "bundleDependencies": false,
+  "contributors": [
+    {
+      "name": "Mike Linkovich",
+      "url": "https://github.com/spacejack"
+    },
+    {
+      "name": "András Parditka",
+      "url": "https://github.com/andraaspar"
+    },
+    {
+      "name": "Isiah Meadows",
+      "url": "https://github.com/isiahmeadows"
+    }
+  ],
+  "dependencies": {},
+  "deprecated": false,
+  "description": "TypeScript definitions for Mithril",
+  "homepage": "https://github.com/DefinitelyTyped/DefinitelyTyped#readme",
+  "license": "MIT",
+  "main": "",
+  "name": "@types/mithril",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DefinitelyTyped/DefinitelyTyped.git"
+  },
+  "scripts": {},
+  "typeScriptVersion": "2.3",
+  "types": "index",
+  "typesPublisherContentHash": "20291b545bc224b7de91ef6fcc616543c4ad391f754185648720a7344c25ec42",
+  "version": "1.1.14"
+}
