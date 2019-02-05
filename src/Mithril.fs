@@ -425,4 +425,4 @@ module Mithril =
 // let [<Import("*","module")>] h: Hyperscript = jsNative
 // let [<Import("*","module")>] Mithril: Mithril.Static = jsNative
 
-let [<Import("*","module")>] MithrilRender: IExports = jsNative
+let [<Import("*","mithril")>] m: IExports = jsNative

@@ -12,21 +12,23 @@ WIP: Not yet tested
 
 ## Usage
 
-Currently something like this:
+See [Fable interop docs](https://fable.io/docs/interacting.html)
+
+Aiming for something like this:
 
 ```fsharp
 module MithrilApp
 
 open Mag
-open Mag.Mithril
+open Fable.Import.Browser
 
-// hyperscript API
-h.trust "hello" |> ignore
-
-printfn "Hello Mithril world"
+let root = document.body
+m.render (root, "hello") |> ignore
 ```
 
-Please help improve the bindings and DSL to be more "fableish" ;)
+However the `Mithril.Children` type generated does not currently support a single `string` as the type.
+
+Please help improve the bindings ;)
 
 ## Overview
 
