@@ -1,8 +1,11 @@
 module MithrilApp
 
 open Mag
-open Mag.Mithril
+// open Mag.Mithril
+open Fable.Import.Browser
 
-h.trust "hello" |> ignore
+let root = document.body
+
+// render root "hello" |> ignore
 
 printfn "Hello Mithril world"

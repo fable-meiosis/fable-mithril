@@ -8,10 +8,7 @@ open Fable.Import.Browser
 
 type Hyperscript = Mithril.Hyperscript
 
-let [<Import("*","module")>] h: Hyperscript = jsNative
-let [<Import("*","module")>] Mithril: Mithril.Static = jsNative
-
-type Attrs = Array<string>
+type Attrs = obj
 type State = obj
 
 type [<AllowNullLiteral>] IExports =
@@ -421,7 +418,11 @@ module Mithril =
             /// A special value that can be returned to stream callbacks to halt execution of downstreams. 
             abstract HALT: obj option
 
-let [<Import("*","module")>] RedrawService: Mithril.RedrawService.Static = jsNative            
-let [<Import("*","module")>] RenderService: Mithril.RenderService.Static = jsNative
-let [<Import("*","module")>] RequestService: Mithril.RequestService.Static = jsNative
-let [<Import("*","module")>] Stream: Mithril.Stream.Static = jsNative
+// let [<Import("*","module")>] RedrawService: Mithril.RedrawService.Static = jsNative            
+// let [<Import("*","module")>] RenderService: Mithril.RenderService.Static = jsNative
+// let [<Import("*","module")>] RequestService: Mithril.RequestService.Static = jsNative
+// let [<Import("*","module")>] Stream: Mithril.Stream.Static = jsNative
+// let [<Import("*","module")>] h: Hyperscript = jsNative
+// let [<Import("*","module")>] Mithril: Mithril.Static = jsNative
+
+let [<Import("*","module")>] MithrilRender: IExports = jsNative
