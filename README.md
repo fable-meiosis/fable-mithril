@@ -10,11 +10,29 @@ Mithril can be used with the excellent [Meiosis pattern](https://meiosis.js.org/
 
 WIP: Not yet tested
 
+## Usage
+
+Currently something like this:
+
+```fsharp
+module MithrilApp
+
+open Mag
+open Mag.Mithril
+
+// hyperscript API
+h.trust "hello" |> ignore
+
+printfn "Hello Mithril world"
+```
+
+Please help improve the bindings and DSL to be more "fableish" ;)
+
 ## Overview
 
 This example aims to showcase how to create custom Fable bindings for JS libraries.
 
-The bindings in `Patchinko.fs` were created using `mithril.d.ts`, created from the raw `mithril.js` file using [dts](https://github.com/Microsoft/dts-gen#how-do-i-use-it) CLI.
+The bindings in `Mihtril.fs` were created using `mithril.d.ts`, created from the raw `mithril.js` file using [dts](https://github.com/Microsoft/dts-gen#how-do-i-use-it) CLI.
 
 Checkout other sample apps at [fable2-samples](https://github.com/fable2-samples)
 
