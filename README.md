@@ -28,7 +28,14 @@ m.render (root, "hello") |> ignore
 
 However the `Mithril.Children` type generated does not currently support a single `string` as the type.
 
-Please help improve the bindings ;)
+```fsharp
+type [<AllowNullLiteral>] IExports =
+  abstract render: el: Element * vnodes: Mithril.Children -> unit`
+```
+
+In JavaScript a variable can have several types but not in F#. Fable provides `U2`, `U3`, etc. to mimic this behavior. See the [erase section](https://fable.io/docs/interacting.html#erase-attribute) of the documentation.
+
+PS: Please help out improving the bindings and the sample app bindings consumer ;)
 
 ## Overview
 
