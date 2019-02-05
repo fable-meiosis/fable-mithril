@@ -35,6 +35,8 @@ type [<AllowNullLiteral>] IExports =
 
 In JavaScript a variable can have several types but not in F#. Fable provides `U2`, `U3`, etc. to mimic this behavior. See the [erase section](https://fable.io/docs/interacting.html#erase-attribute) of the documentation.
 
+Also check out [F# Interop with Javascript in Fable: The Complete Guide](https://medium.com/@zaid.naom/f-interop-with-javascript-in-fable-the-complete-guide-ccc5b896a59f)
+
 PS: Please help out improving the bindings and the sample app bindings consumer ;)
 
 ## Overview

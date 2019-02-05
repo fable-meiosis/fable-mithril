@@ -4,7 +4,8 @@ open Mag
 open Fable.Import.Browser
 
 let root = document.body
-
-// m.render (root, "hello") |> ignore
+type Txt = string option
+let x = Some "hello"
+m.render (root, x) |> ignore
 
 printfn "Hello Mithril world"

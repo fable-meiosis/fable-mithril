@@ -5,6 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="paket.references" />
+    <Compile Include="HyperScript.fs" />    
     <Compile Include="Mithril.fs" />    
     <Compile Include="MithrilApp.fs" />
   </ItemGroup>
